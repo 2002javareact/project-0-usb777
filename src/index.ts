@@ -45,12 +45,9 @@ app.post('/login', (req,res)=>{
 // we seperated out the concern of finding the appropriate user from our controller
 // this means in the future, when we rewrite this method, we shouldn't have to change the function that is calling it
 // by seperating these concerns we are loosly coupling our code
-function findUserByUsernameAndPassword(username:string, password:string)
-{
-    for(let user of users)
-    {
-        if(user.username === username && user.password === password)
-        {
+function findUserByUsernameAndPassword(username:string, password:string){
+    for(let user of users){
+        if(user.username === username && user.password === password){
             return user
         }
     }

@@ -9,8 +9,3 @@ export const users = [
     new User('cperry', 'password', 'charles@jsisverycool.com', 2, 'Charles', 'Perry', 'User'),
     new User('abatson', 'password', 'trainer@jsisverycool.com', 3,'Alec','Batson','Admin')
 ]
-
-
-
-
-/**c:\Git\Demos\1Week\webflicks */
