@@ -55,11 +55,23 @@ export async function daoSaveOneUser(newUser:UserDTO):Promise<User> {
     try { 
         client = await connectionPool.connect()
         // send a query and immeadiately get the role id matching the name on the dto
-        let roleId = (await client.query('SELECT * FROM project0."role" R WHERE R."role" = $1', [newUser.role])).rows[0].role_id
+        let roleid = (await client.query('SELECT * FROM project0."role" R WHERE R."role" = $1', [newUser.role])).rows[0].role_id
         // send an insert that uses the id above and the user input
-        //INSERT INTO project0."user" 	(username, "password", firstname, lastname, email, "role")    VALUES ($1, $2, $3, $4, $5, $6) ;
-        let result = await client.query('INSERT INTO project0."user" 	(username, "password", firstname, lastname, email, "role")  VALUES ($1, $2, $3, $4, $5, $6) RETURNING userid;',
-        [newUser.username, newUser.password, newUser.email, newUser.firstName, newUser.lastName, roleId])
+       
+
+        /** !!! Change query to UPDATE !!! */
+        let result = await client
+        .query('UPDATE project0."user" SET username=$1, "password"=$2, firstname=$3, lastname=$4, email=$5, "role"=$6 where userid = $7 RETURNING userid;',
+        [newUser.username, 
+            newUser.password, 
+            newUser.firstname,
+             newUser.lastname,
+              newUser.email, 
+               roleid,
+                newUser.userid])
+        
+        
+        
         // put that newly genertaed user_id on the DTO 
         newUser.userid = result.rows[0].userid
         return userDTOToUserConverter(newUser)// convert and send back
@@ -109,14 +121,15 @@ export async function daoUpdateOneUser(newUser:UserDTO):Promise<User> {
         // send an insert that uses the id above and the user input
         //INSERT INTO project0."user" 	(username, "password", firstname, lastname, email, "role")    VALUES ($1, $2, $3, $4, $5, $6) ;
         let result = await client.query('INSERT INTO project0."user" 	(username, "password", firstname, lastname, email, "role")  VALUES ($1, $2, $3, $4, $5, $6) RETURNING userid;',
-        [newUser.username, newUser.password, newUser.email, newUser.firstName, newUser.lastName, roleId])
+        [newUser.username, newUser.password,  newUser.firstname, newUser.lastname,newUser.email, roleId])
         // put that newly genertaed user_id on the DTO 
         newUser.userid = result.rows[0].userid
         return userDTOToUserConverter(newUser)// convert and send back
     } catch(e){
-
+        console.log("Erored ===" +e);
         throw new InternalServerError()
     } finally {
+        
         client && client.release()
     }
 }

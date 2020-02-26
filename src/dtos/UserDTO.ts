@@ -3,20 +3,20 @@ export class UserDTO{
   userid: number
   username: string
   password:  string
-  firstName: string
-  lastName: string
+  firstname: string
+  lastname: string
   email: string
-  roleId: number
+  roleid: number
   role: string
   constructor( userid: number,username:string,password: string,
-     firstName:string,lastName:string,email:string,roleId:number,role:string)
+     firstname:string,lastname:string,email:string,roleid:number,role:string)
   { this.userid = userid       //1
     this.username = username;  //2
     this.password = password;  //3
-    this.firstName = firstName;//4
-    this.lastName = lastName;  //5
+    this.firstname = firstname;//4
+    this.lastname = lastname;  //5
     this.email = email;        //6
-    this.roleId = roleId;      //7
+    this.roleid = roleid;      //7
     this.role = role;          //8
   }
 }

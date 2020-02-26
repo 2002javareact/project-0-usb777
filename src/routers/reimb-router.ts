@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { Reimbursement } from '../models/Reimbursement'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
-import { findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
+import { findReimbursementByStatusId, findReimbursementByUserId,/* insertReimbursement, */ updateReimbursement } from '../services/reimb-service'
 import { ReimbursementDTO } from '../dtos/ReimbursementDTO'
 
 import { InternalServerError } from '../errors/InternalServerError'

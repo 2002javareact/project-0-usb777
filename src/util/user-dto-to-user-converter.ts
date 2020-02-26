@@ -8,9 +8,9 @@ export function userDTOToUserConverter(userDTO:UserDTO):User
         userDTO.userid,
         userDTO.username,
         userDTO.password,
-        userDTO.firstName,
-        userDTO.lastName,
+        userDTO.firstname,
+        userDTO.lastname,
         userDTO.email,
-        new Role(userDTO.roleId, userDTO.role) 
+        new Role(userDTO.roleid, userDTO.role) 
     )
 }

@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { User } from '../models/User'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
-import { findAllUsers, saveOneUser, findUserById } from '../services/user-service'
+import { findAllUsers, updateOneUser, findUserById } from '../services/user-service'
 import { UserDTO } from '../dtos/UserDTO'
 
 
@@ -11,7 +11,7 @@ export const userRouter = express.Router()
 
 //generally a get request to the root of a path
 //will give you every single one of those resources
-userRouter.get('', [authFactory(['Admin']),  async (req,res)=>{
+userRouter.get('', [authFactory(['Admin', 'Finance-Manager']),  async (req,res)=>{
     //get all of our users
     //format them to json
     //use the response obj to send them back
@@ -42,38 +42,27 @@ userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCh
 
 // generally in rest convention
 // a post request to the root of a resource will make one new of that resource
-userRouter.post('', authFactory(['Admin']), async (req,res)=>{
-    let { userid, username, password,  firstName, lastName,   email,   roleId,  role }:
-    {   userid:number,
-        username:string,
-        password:string,
-        email:string,
-        id:number,
-        firstName:string,
-        lastName:string,
-        roleId:number,
-        role:string
-    } = req.body// this will be where the data the sent me is
+userRouter.patch('', authFactory(['Admin']), async (req,res)=>
+{
+    let { userid, username, password,  firstname, lastname,   email, role } = req.body// this will be where the data the sent me is
     // the downside is this is by default just a string of json, not a js object
-    if(username && password && email && userid && firstName && lastName && role){
+    console.log(JSON.stringify(req.body))
+    // {"userid":3,"username":"user256","password":"password","firstname":"Helga","lastname":"Yorming777","email":"hyorg@gmail.com","role":{"roleid":2,"role":"User"}}
+   /*
+    console.log("role_id ====" + role.roleid); 
+    console.log("role_id ====" + role.role); 
+   */
+    if(username && password && email && userid && firstname && lastname && role.roleid && role.role)
+    {
 
-        
-        let newUser = await saveOneUser(new UserDTO(
-            userid,
-            username,
-            password,
-            firstName,
-            lastName,
-            email,
-            roleId,
-            role
-        ))
-        // this would be some function for adding a new user to a db
-        res.status(201).json(newUser);
-    } else {
-        res.status(400).send('Please include all user fields')
-        // for setting a status and a body
-    }
+    let uDTO:UserDTO= new UserDTO(userid,username,password,firstname,lastname,email,role.roleid,role.role)
+    
 
+    let newUser = await updateOneUser(uDTO)
+    res.status(201).json(newUser);
+} else {
+    res.status(400).send('Please include all user fields')
+    // for setting a status and a body
+}
 })
 
