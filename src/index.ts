@@ -2,6 +2,7 @@ import * as express from 'express'
 import * as bodyparser from 'body-parser'
 import { loggingMiddleware } from './middleware/logging-middleware'
 import { userRouter } from './routers/user-router'
+/**  import { reimbRouter } from './routers/reimb-router' */
 import { sessionMiddleware } from './middleware/session-middleware'
 import { findUserByUsernameAndPassword} from './services/user-service'
 // I call this express function, and it returns an object I can use to build my api
@@ -21,7 +22,7 @@ app.use(sessionMiddleware)
 
 // this will register all http requests that match /users
 // and redirect them to the userRouter
-app.use('/users', userRouter)
+
 
 
 app.post('/login', async (req,res)=>{
@@ -41,6 +42,9 @@ app.post('/login', async (req,res)=>{
     }
 })
 
+app.use('/users', userRouter)
+
+//  app.use('/reimbursements',reimbRouter)
 
 
 //I can change the order of my endpoints
