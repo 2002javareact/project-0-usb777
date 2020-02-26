@@ -1,8 +1,9 @@
 // big rule, always call either res or next
 
-export const authAdminMiddleware = (req,res,next)=>{
+export const authAdminMiddleware = (req,res,next)=>
+{
     if(!req.session.user){
-        res.status(401).send('Please Login1')
+        res.status(401).send('Please Login')
     }else if(req.session.user.role === 'Admin'){
         next()
     } else {
@@ -11,10 +12,11 @@ export const authAdminMiddleware = (req,res,next)=>{
     
 } 
 
-export const authUserMiddleware = (req,res,next) => {
+export const authUserMiddleware = (req,res,next) => 
+{
     if(!req.session.user){
-        res.status(401).send('Please Login2')
-    }else if(req.session.user.role === 'Admin' || req.session.user.id === +req.params.id ){
+        res.status(401).send('Please Login')
+    }else if(req.session.user.role === 'User' || req.session.user.id === +req.params.id ){
         next()
     } else {
         res.status(403).send('You are UnAuthorized for this endpoint')
@@ -26,7 +28,7 @@ export const authFactory = (roles:string[]) => {
     return (req,res,next) => {
         // this checks that you are logged in
         if(!req.session.user){
-            res.status(401).send('Please Login3')
+            res.status(401).send('Please Login')
         // is there is the special role Everyone, allow them in
         } else if(roles.includes('Everyone')){
             next()
