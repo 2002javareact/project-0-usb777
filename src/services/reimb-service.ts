@@ -1,4 +1,4 @@
-import { daoFindAllReimbursement, daoFindReimbursementByStatusId, daoFindReimbursementByUserId } from "../rep_dao/reim-dao";
+import { daoFindAllReimbursement, daoFindReimbursementByStatusId, daoFindReimbursementByUserId, daoInsertReimbursement, daoUpdateReimbursement } from "../rep_dao/reim-dao";
 import { Reimbursement } from "../models/Reimbursement";
 import { ReimbursementDTO } from "../dtos/ReimbursementDTO";
 
@@ -10,11 +10,6 @@ export async function findAllReimbursement():Promise<Reimbursement[]>{
    return await daoFindAllReimbursement()
 }
 
-/*
-export async function saveOneUser(newUser:UserDTO):Promise<User>{
-   return await daoSaveOneUser(newUser)
-}
-*/
 
 // function finding Reimb by statusid
 export async function findReimbursementByStatusId(statusId:number):Promise<Reimbursement>
@@ -26,4 +21,15 @@ export async function findReimbursementByStatusId(statusId:number):Promise<Reimb
 export async function findReimbursementByUserId(userId:number):Promise<Reimbursement>
 {
    return await daoFindReimbursementByUserId(userId)
+}
+
+
+export async function InsertReimbursement(newReimbursement:Reimbursement):Promise<Reimbursement>
+{
+   return await daoInsertReimbursement(newReimbursement)
+}
+
+export async function updateReimbursement(reimbursementUpdate:any):Promise<Reimbursement>
+{
+   return await daoUpdateReimbursement(reimbursementUpdate)
 }

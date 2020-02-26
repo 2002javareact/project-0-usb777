@@ -1,6 +1,6 @@
 import * as express from 'express'
 import { User } from '../models/User'
-import { authAdminMiddleware, authUserMiddleware, authFactory, authCheckId } from '../middleware/auth-midleware'
+import {  authFactory, authCheckId } from '../middleware/auth-midleware'
 import { findAllUsers, saveOneUser, findUserById } from '../services/user-service'
 import { UserDTO } from '../dtos/UserDTO'
 
@@ -19,6 +19,26 @@ userRouter.get('', [authFactory(['Admin']),  async (req,res)=>{
     res.json(users)// this will format the object into json and send it back
     
 }])
+
+// in express we can add a path variable by using a colon in the path
+// this will add it to the request object and the colon makes it match anything
+userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCheckId, async (req,res)=>{
+    const id = +req.params.id// the plus sign is to type coerce into a number
+    if(isNaN(id)){
+        res.sendStatus(400)
+    }else {
+        try{
+            let user = await findUserById(id)
+            res.json(user)
+        }catch(e){
+            res.status(e.status).send(e.message)
+        }
+      
+        
+    }
+})
+
+
 
 // generally in rest convention
 // a post request to the root of a resource will make one new of that resource
@@ -57,20 +77,3 @@ userRouter.post('', authFactory(['Admin']), async (req,res)=>{
 
 })
 
-// in express we can add a path variable by using a colon in the path
-// this will add it to the request object and the colon makes it match anything
-userRouter.get('/:id', authFactory(['Admin', 'User']), authCheckId, async (req,res)=>{
-    const id = +req.params.id// the plus sign is to type coerce into a number
-    if(isNaN(id)){
-        res.sendStatus(400)
-    }else {
-        try{
-            let user = await findUserById(id)
-            res.json(user)
-        }catch(e){
-            res.status(e.status).send(e.message)
-        }
-      
-        
-    }
-})
