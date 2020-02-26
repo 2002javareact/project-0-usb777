@@ -15,7 +15,6 @@ app.use('/', bodyparser.json())
 // thats why this is called middleware, is does some work in the middle, and then pass the request to an endpoint
 
 app.use(loggingMiddleware)
-
 app.use(sessionMiddleware)
 
 

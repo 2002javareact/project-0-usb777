@@ -1,4 +1,4 @@
-import { daoFindUserByUsernameAndPassword, daoFindAllUsers, daoSaveOneUser, daoFindUserById } from "../repositories/user-dao";
+import { daoFindUserByUsernameAndPassword, daoFindAllUsers, daoSaveOneUser, daoFindUserById } from "../rep_dao/user-dao";
 import { User } from "../models/User";
 import { UserDTO } from "../dtos/UserDTO";
 
