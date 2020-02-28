@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { Reimbursement } from '../models/Reimbursement'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
-import { findReimbursementByStatusId, findReimbursementByUserId,/* insertReimbursement, */ updateReimbursement } from '../services/reimb-service'
+import { findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
 import { ReimbursementDTO } from '../dtos/ReimbursementDTO'
 
 import { InternalServerError } from '../errors/InternalServerError'
@@ -25,7 +25,7 @@ reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), 
     }
 })
 
-//get request, that finance-managers, admins, and users with the same userId can access that returns reimbursements by userId
+//Get reimbursements by userId
 reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager','User']), authCheckId, async (req, res) => {
     const id = +req.params.userId
     if (isNaN(id)) {
@@ -41,15 +41,28 @@ reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager'
 })
 
 //add new Reimbursement
-/*
+
 reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) => {
-    let { reimbursementId,author, amount, dateSubmitted,
-        dateResolved, description, resolver,
+    let { reimbursementId,author, amount, datesubmitted,
+        dateresolved, description, resolver,
         status, type } = req.body
 
     if (amount && description && type) {
         try {
-            let reimbursement = await insertReimbursement(new Reimbursement(0, req.session.user.userId, amount, '02/02/2020' , '1970/01/01', description, 4, 1, 1))
+            let reimbDTO:ReimbursementDTO = new ReimbursementDTO(
+                0, 
+                req.session.user.userId,
+                amount,
+                datesubmitted, // ?
+                dateresolved,   //?
+                description,
+                resolver,   //  null
+                status,     
+                type);
+    
+                console.log(JSON.stringify( reimbDTO ) )
+
+            let reimbursement = await insertReimbursement(reimbDTO)
             res.json(reimbursement).sendStatus(201)
         } catch (e) {
             throw new InternalServerError()
@@ -59,7 +72,7 @@ reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (r
     }
 })
 
-*/
+
 
 //Patch request, that only admins and finance-managers can call. passes in information to be update for reimbursements
 reimbRouter.patch('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) => {

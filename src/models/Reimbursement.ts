@@ -1,25 +1,25 @@
 export class Reimbursement 
 {
-  reimbursementId: number // primary key
+  reimbursementid: number // primary key
 	author: number  // foreign key -> User, not null
 	amount: number// not null
-    dateSubmitted: number // not null
-    dateResolved: number // not null
+  datesubmitted: string // not null
+  dateresolved: string // not null
     description: string // not null
     resolver: number // foreign key -> User
     status: number // foreign ey -> ReimbursementStatus, not null
     type: number // foreign key -> ReimbursementType
 
 
-constructor(reimbursementId: number, author: number,amount: number,dateSubmitted: number ,
-             dateResolved: number, description: string, resolver: number, 
+constructor(reimbursementid: number, author: number,amount: number,datesubmitted: string ,
+             dateresolved: string, description: string, resolver: number, 
              status: number , type: number )
 {
-    this.reimbursementId =  reimbursementId
+    this.reimbursementid =  reimbursementid
     this.author          =           author
     this.amount          =           amount
-    this.dateSubmitted   =    dateSubmitted
-    this.dateResolved    =     dateResolved
+    this.datesubmitted   =    datesubmitted
+    this.dateresolved    =     dateresolved
     this.description     =       description
     this.resolver        =         resolver 
     this.status          =           status

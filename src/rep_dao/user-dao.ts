@@ -123,7 +123,9 @@ export async function daoUpdateOneUser(newUser:UserDTO):Promise<User> {
         let result = await client.query('INSERT INTO project0."user" 	(username, "password", firstname, lastname, email, "role")  VALUES ($1, $2, $3, $4, $5, $6) RETURNING userid;',
         [newUser.username, newUser.password,  newUser.firstname, newUser.lastname,newUser.email, roleId])
         // put that newly genertaed user_id on the DTO 
+       console.log("Check UserUpdate from DAO"+ result);
         newUser.userid = result.rows[0].userid
+        
         return userDTOToUserConverter(newUser)// convert and send back
     } catch(e){
         console.log("Erored ===" +e);

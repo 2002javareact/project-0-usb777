@@ -55,14 +55,18 @@ userRouter.patch('', authFactory(['Admin']), async (req,res)=>
     if(username && password && email && userid && firstname && lastname && role.roleid && role.role)
     {
 
-    let uDTO:UserDTO= new UserDTO(userid,username,password,firstname,lastname,email,role.roleid,role.role)
+    let uDTO:UserDTO = new UserDTO(userid,username,password,firstname,lastname,email,role.roleid,role.role)
     
 
     let newUser = await updateOneUser(uDTO)
     res.status(201).json(newUser);
-} else {
+
+    console.log(JSON.stringify( newUser ) )
+} 
+else {
     res.status(400).send('Please include all user fields')
+   
     // for setting a status and a body
-}
+     }
 })
 

@@ -40,7 +40,10 @@ export async function daoFindReimbursementByStatusId(status_id:number):Promise<R
     let client:PoolClient
     try{
         client = await connectionPool.connect()
-      let result = await client.query('select *  from project0.reimbursement r  inner join project0.reimbursementstatus rstatus on r.status  = rstatus.statusid where r.status = $1', [status_id])
+      let result = await client.query('select *  from project0.reimbursement r '
+      +' inner join project0.reimbursementstatus rstatus on r.status  = rstatus.statusid '
+      +' inner join project0.user u on r.author  = u.userid '
+      +' where r.status = $1', [status_id])
         if(result.rowCount === 0)
         {
             throw new Error('Reimbursement Not Found')
@@ -96,7 +99,7 @@ export async function daoFindReimbursementByUserId(user_id:number):Promise<Reimb
 
 
 //Takes in a reimbursement Object and runs an insert statement to add data to the DB
-export async function daoInsertReimbursement(newReimb: Reimbursement): Promise<Reimbursement> {
+export async function daoInsertReimbursement(newReimb: ReimbursementDTO): Promise<Reimbursement> {
     let client: PoolClient
     try {
 
@@ -106,8 +109,8 @@ export async function daoInsertReimbursement(newReimb: Reimbursement): Promise<R
                  newReimb.dateResolved, newReimb.description, 
                  newReimb.resolver, newReimb.status, newReimb.type])
        
-                 newReimb.reimbursementId = result.rows[0].reimbursementid
-        return newReimb
+                 newReimb.reimbursementid = result.rows[0].reimbursementid
+        return reimbursementDTOToReimbursementConverter(newReimb)
     } catch (e) {
         throw new InternalServerError()
     } finally {
@@ -121,23 +124,24 @@ export async function daoUpdateReimbursement(reimbursementUpdate: any): Promise<
     let client: PoolClient
     try {
         client = await connectionPool.connect()
-        let result = await client.query('select * from projectzero.reimbursement where reimbursementid = $1', [reimbursementUpdate.reimbursementid])
-        let updatedReimbursement = reimbursementDTOToReimbursementConverter(result.rows[0])
+        let result = await client.query('select * from project0.reimbursement where reimbursementid = $1', [reimbursementUpdate.reimbursementid])
+        let updatedReimbursement = result.rows[0]
 
         updatedReimbursement.author = reimbursementUpdate.author || updatedReimbursement.author
         updatedReimbursement.amount = reimbursementUpdate.amount || updatedReimbursement.amount
-        updatedReimbursement.dateResolved = reimbursementUpdate.dateResolved || updatedReimbursement.dateResolved
-        updatedReimbursement.dateSubmitted = reimbursementUpdate.dateSubmitted || updatedReimbursement.dateSubmitted
+        updatedReimbursement.dateResolved = reimbursementUpdate.dateresolved || updatedReimbursement.dateResolved
+        updatedReimbursement.dateSubmitted = reimbursementUpdate.datesubmitted || updatedReimbursement.dateSubmitted
         updatedReimbursement.description = reimbursementUpdate.description || updatedReimbursement.description
         updatedReimbursement.resolver = reimbursementUpdate.resolver || updatedReimbursement.resolver
         updatedReimbursement.status = reimbursementUpdate.status || updatedReimbursement.status
         updatedReimbursement.type = reimbursementUpdate.type || updatedReimbursement.type
-
+        console.log(JSON.stringify( updatedReimbursement ) )
         await client.query('update project0.reimbursement set author = $1 , amount = $2 , dateSubmitted = $3, dateResolved = $4, resolver = $5 , status = $6 , "type" = $7 where reimbursementid = $8;',
-            [updatedReimbursement.author, updatedReimbursement.amount, updatedReimbursement.dateSubmitted, updatedReimbursement.dateResolved, updatedReimbursement.resolver, updatedReimbursement.status, updatedReimbursement.type, updatedReimbursement.reimbursementId])
+            [updatedReimbursement.author, updatedReimbursement.amount, updatedReimbursement.dateSubmitted, updatedReimbursement.dateResolved, updatedReimbursement.resolver, updatedReimbursement.status, updatedReimbursement.type, updatedReimbursement.reimbursementid])
 
-        return updatedReimbursement
+        return reimbursementDTOToReimbursementConverter(updatedReimbursement);
     } catch (e) {
+        console.log("====Error===="+e )
         throw new InternalServerError()
     } finally {
         client && client.release()

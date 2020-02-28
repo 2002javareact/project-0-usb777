@@ -23,13 +23,13 @@ export async function findReimbursementByUserId(userId:number):Promise<Reimburse
    return await daoFindReimbursementByUserId(userId)
 }
 
-/*
-export async function insertReimbursement(newReimbursement:Reimbursement):Promise<Reimbursement>
+
+export async function insertReimbursement(newReimbursement:ReimbursementDTO):Promise<Reimbursement>
 {
    return await daoInsertReimbursement(newReimbursement)
 }
-*/
-export async function updateReimbursement(reimbursementUpdate:any):Promise<Reimbursement>
+
+export async function updateReimbursement(reimbursementUpdate:ReimbursementDTO):Promise<Reimbursement>
 {
    return await daoUpdateReimbursement(reimbursementUpdate)
 }
