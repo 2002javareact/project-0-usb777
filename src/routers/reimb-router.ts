@@ -11,12 +11,18 @@ import { InternalServerError } from '../errors/InternalServerError'
 export const reimbRouter = express.Router()
 
 //Get reimbursements by statusId
-reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), async (req, res) => {
-    const id = +req.params.statusId
-    if (isNaN(id)) {
+reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), async (req, res) => 
+{    /**Super important part about roles */
+     console.log("Role is " + req.session.user.role.role )
+    
+     const id = +req.params.statusId
+    if (isNaN(id)) 
+    {
         res.sendStatus(400)
-    } else {
-        try {
+    } else 
+    {
+        try 
+        {
             let status = await findReimbursementByStatusId(id)
             res.json(status)
         } catch (e) {
@@ -41,37 +47,68 @@ reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager'
 })
 
 //add new Reimbursement
-
 reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) => {
-    let { reimbursementId,author, amount, datesubmitted,
-        dateresolved, description, resolver,
+    let { reimbursementId,author, amount, dateSubmitted,
+        dateResolved, description, resolver,
         status, type } = req.body
 
-    if (amount && description && type) {
-        try {
-            let reimbDTO:ReimbursementDTO = new ReimbursementDTO(
+
+        if (!author || !dateSubmitted || !dateResolved || !description || !resolver || !status)
+         {
+          if (amount && description && type) {
+            try 
+             {
+                // reimbursement Id = 0
+                let reimbursement = await insertReimbursement(new Reimbursement(0, req.session.user.userId, amount, new Date().toLocaleDateString() , '1970/01/01', description, null, 1, type))
+                res.json(reimbursement).sendStatus(201)
+              } catch (e) 
+               {
+                throw new InternalServerError()
+                }
+
+            }
+            else  
+            {
+                res.status(400).send('Please include all fields for Reimbursement')
+            }
+
+        } //   if (!author || !dateSubmitted || !dateResolved || !description || !resolver || !status)
+        // all fields included
+        else if (author && amount && dateSubmitted && dateResolved && description && resolver && status && type)
+        {
+              
+    
+        try 
+        {
+            let reimb:Reimbursement = new Reimbursement(
                 0, 
                 req.session.user.userId,
                 amount,
-                datesubmitted, // ?
-                dateresolved,   //?
+                dateSubmitted, // 
+                dateResolved,   //
                 description,
                 resolver,   //  null
                 status,     
                 type);
     
-                console.log(JSON.stringify( reimbDTO ) )
+                console.log("router reimbDTO = " + JSON.stringify( reimb ) )
 
-            let reimbursement = await insertReimbursement(reimbDTO)
+            let reimbursement = await insertReimbursement(reimb)
             res.json(reimbursement).sendStatus(201)
-        } catch (e) {
+        } catch (e) 
+           {
             console.log("===errored==="+e)
-            throw new InternalServerError()
-           
+            throw new InternalServerError()          
+           }  //catch
+   
         }
-    } else {
-        res.status(400).send('Please include all fields for Reimbursement')
-    }
+        
+        
+        else {
+            res.status(400).send('Please include all fields for Reimbursement')
+        }
+
+
 })
 
 

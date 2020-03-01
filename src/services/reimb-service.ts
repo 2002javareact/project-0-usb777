@@ -24,7 +24,7 @@ export async function findReimbursementByUserId(userId:number):Promise<Reimburse
 }
 
 
-export async function insertReimbursement(newReimbursement:ReimbursementDTO):Promise<Reimbursement>
+export async function insertReimbursement(newReimbursement:Reimbursement):Promise<Reimbursement>
 {
    return await daoInsertReimbursement(newReimbursement)
 }

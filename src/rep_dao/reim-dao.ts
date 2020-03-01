@@ -92,37 +92,14 @@ export async function daoFindReimbursementByUserId(user_id:number):Promise<Reimb
     }
 }
 
-/*
 
-
-//Takes in a reimbursement Object and runs an insert statement to add data to the DB
-export async function daoInsertReimbursement(newReimb: ReimbursementDTO): Promise<Reimbursement> {
-    let client: PoolClient
-    try {
-
-        client = await connectionPool.connect()
-        let result = await client.query('insert into project0.reimbursement (author,amount,datesubmitted,dateresolved,description,resolver,status,"type")  values  ($1,$2,$3,$4,$5,$6,$7,$8) returning reimbursementId;',
-            [newReimb.author, newReimb.amount, newReimb.dateSubmitted,
-                 newReimb.dateresolved, newReimb.description, 
-                 newReimb.resolver, newReimb.status, newReimb.type])
-       
-                 newReimb.reimbursementid = result.rows[0].reimbursementid
-        return reimbursementDTOToReimbursementConverter(newReimb)
-    } catch (e) {
-        throw new InternalServerError()
-    } finally {
-        client && client.release()
-    }
-}
-
-*/
 export async function daoUpdateReimbursement(reimbursementUpdate: ReimbursementDTO): Promise<Reimbursement> 
 {
     let client: PoolClient
     try {
         client = await connectionPool.connect()
         let result = await client.query('select * from project0.reimbursement where reimbursementid = $1', [reimbursementUpdate.reimbursementid])
-        let updatedReimbursement = result.rows[0]
+        let updatedReimbursement = result.rows[0]   //   model Object
 
         updatedReimbursement.author = reimbursementUpdate.author || updatedReimbursement.author
         updatedReimbursement.amount = reimbursementUpdate.amount || updatedReimbursement.amount
@@ -132,7 +109,7 @@ export async function daoUpdateReimbursement(reimbursementUpdate: ReimbursementD
         updatedReimbursement.resolver = reimbursementUpdate.resolver || updatedReimbursement.resolver
         updatedReimbursement.status = reimbursementUpdate.status || updatedReimbursement.status
         updatedReimbursement.type = reimbursementUpdate.type || updatedReimbursement.type
-        console.log(JSON.stringify( updatedReimbursement ) )
+        //console.log(  JSON.stringify( updatedReimbursement ) )
         await client.query('update project0.reimbursement set author = $1 , amount = $2 , dateSubmitted = $3, dateResolved = $4, resolver = $5 , status = $6 , "type" = $7 where reimbursementid = $8;',
             [updatedReimbursement.author, updatedReimbursement.amount, updatedReimbursement.dateSubmitted, updatedReimbursement.dateResolved, updatedReimbursement.resolver, updatedReimbursement.status, updatedReimbursement.type, updatedReimbursement.reimbursementid])
 
@@ -148,35 +125,64 @@ export async function daoUpdateReimbursement(reimbursementUpdate: ReimbursementD
 
 
 
-//Update reimb
-export async function daoInsertReimbursement(reimbursementAdded: ReimbursementDTO): Promise<Reimbursement> {
+//Insert reimb
+export async function daoInsertReimbursement(reimbursementInsert: Reimbursement): Promise<Reimbursement>
+{
+    
     let client: PoolClient
     try {
+
         client = await connectionPool.connect()
-
-        let newReimbursement: ReimbursementDTO
-        //newReimbursement.reimbursementid = 0
-        newReimbursement.author = reimbursementAdded && reimbursementAdded.author
-        newReimbursement.amount = reimbursementAdded && reimbursementAdded.amount
-        newReimbursement.dateresolved = reimbursementAdded && reimbursementAdded.dateresolved 
-        newReimbursement.datesubmitted = reimbursementAdded && reimbursementAdded.datesubmitted 
-        newReimbursement.description = reimbursementAdded && reimbursementAdded.description 
-        newReimbursement.resolver = reimbursementAdded && reimbursementAdded.resolver 
-        newReimbursement.status = reimbursementAdded && reimbursementAdded.status 
-        newReimbursement.type = reimbursementAdded && reimbursementAdded.type 
-
-        console.log("from DAO " + JSON.stringify( newReimbursement ) )
-        await client.query('insert into project0.reimbursement '
-        +' (author,amount,datesubmitted,dateresolved,description,resolver,status,"type") '
-        +'  values  '+
-        +' ($1,      $2,    $3,          $4,           $5,        $6,      $7,      $8) ',
-   [newReimbursement.author, newReimbursement.amount, newReimbursement.datesubmitted, newReimbursement.dateresolved, newReimbursement.description, newReimbursement.resolver, newReimbursement.status, newReimbursement.type, newReimbursement.reimbursementid])
-
-        return reimbursementDTOToReimbursementConverter(newReimbursement);
+        let result = await client.query('insert into project0.reimbursement (author,amount,dateSubmitted,dateResolved,description,resolver,status,"type")  values  ($1,$2,$3,$4,$5,$6,$7,$8) returning reimbursementId;',
+            [reimbursementInsert.author, reimbursementInsert.amount, reimbursementInsert.dateSubmitted, reimbursementInsert.dateResolved, reimbursementInsert.description, reimbursementInsert.resolver, reimbursementInsert.status, reimbursementInsert.type])
+        //Because the reimbursementid is added by the DB, this allows us to set the id after the reimbursement
+        reimbursementInsert.reimbursementId = result.rows[0].reimbursementid
+        return (reimbursementInsert);
     } catch (e) {
-        console.log("====Error===="+e )
         throw new InternalServerError()
     } finally {
         client && client.release()
     }
+    
+    
+    
+    
+    
+    
+    
+    /*
+    let client: PoolClient
+    try {
+        client = await connectionPool.connect()
+        let insertedReimbursement : ReimbursementDTO
+
+        insertedReimbursement.reimbursementid = 100
+        insertedReimbursement.author = reimbursementInsert.author || insertedReimbursement.author
+        insertedReimbursement.amount = reimbursementInsert.amount || insertedReimbursement.amount
+        insertedReimbursement.datesubmitted = reimbursementInsert.datesubmitted || insertedReimbursement.datesubmitted
+        insertedReimbursement.dateresolved = reimbursementInsert.dateresolved || insertedReimbursement.dateresolved
+        insertedReimbursement.description = reimbursementInsert.description || insertedReimbursement.description
+        insertedReimbursement.resolver =  reimbursementInsert.resolver || insertedReimbursement.resolver
+        insertedReimbursement.status = reimbursementInsert.status || insertedReimbursement.status
+        insertedReimbursement.type = reimbursementInsert.type || insertedReimbursement.type
+         
+        
+
+        console.log("from DAO " + JSON.stringify( insertedReimbursement ) )
+       let reimbLastId = await client.query('insert into project0.reimbursement '
+        +' (reimbursementid, author,amount,datesubmitted,dateresolved,description,resolver,status,"type" ) '
+        +'  values  '+
+        +' ($1,      $2,    $3,          $4,           $5,        $6,      $7,      $8,   $9) returning  reimbursementid',
+   [101,  insertedReimbursement.author, insertedReimbursement.amount, insertedReimbursement.datesubmitted, insertedReimbursement.dateresolved, insertedReimbursement.description, insertedReimbursement.resolver, insertedReimbursement.status, insertedReimbursement.type])
+   insertedReimbursement.reimbursementid = reimbLastId
+        return reimbursementDTOToReimbursementConverter(insertedReimbursement);
+    } catch (e) {
+        console.log("====Error in daoInsertReimbursement===="+e )  
+        throw new InternalServerError()
+    } finally {
+        client && client.release()
+    }
+
+
+    */
 }
