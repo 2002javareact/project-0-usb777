@@ -1,18 +1,17 @@
-import { Reimbursement } from "../models/Reimbursement";
 import { ReimbursementDTO } from "../dtos/ReimbursementDTO";
+import { Reimbursement } from "../models/Reimbursement";
 
 
-export function reimbursementDTOToReimbursementConverter(ReimbursementDTO:ReimbursementDTO):Reimbursement
-{
+export function reimbursementDTOToReimbursementConverter(reimbursementDTO:ReimbursementDTO):Reimbursement{
     return new Reimbursement(
-        ReimbursementDTO.reimbursementid,    //1
-        ReimbursementDTO.author,             //2
-        ReimbursementDTO.amount,             //3 
-        ReimbursementDTO.dateSubmitted ,      //4
-        ReimbursementDTO.dateResolved,       //5
-        ReimbursementDTO.description,        //6
-        ReimbursementDTO.resolver,           //7
-        ReimbursementDTO.status,             //8
-        ReimbursementDTO.type                //9
+        reimbursementDTO.reimbursementid,
+        reimbursementDTO.author,
+        reimbursementDTO.amount,
+        reimbursementDTO.datesubmitted,
+        reimbursementDTO.dateresolved,
+        reimbursementDTO.description,
+        reimbursementDTO.resolver,
+        reimbursementDTO.status,
+        reimbursementDTO.type
     )
 }

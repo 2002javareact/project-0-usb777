@@ -3,8 +3,8 @@ export class ReimbursementDTO{
     reimbursementid: number // primary key
 	author: number  // foreign key -> User, not null
 	amount: number// not null
-    dateSubmitted: string
-    dateResolved: string
+    datesubmitted: string
+    dateresolved: string
     description: string // not null
     resolver: number // foreign key -> User
     status: number // foreign ey -> ReimbursementStatus, not null
@@ -14,8 +14,8 @@ export class ReimbursementDTO{
         reimbursementid: number, 
         author: number,
         amount: number,
-        dateSubmitted: string,
-        dateResolved: string,
+        datesubmitted: string,
+        dateresolved: string,
         description: string,
         resolver: number,
         status: number,
@@ -25,8 +25,8 @@ export class ReimbursementDTO{
         this.reimbursementid = reimbursementid
         this.author = author
         this.amount = amount
-        this.dateSubmitted = dateSubmitted
-        this.dateResolved= dateResolved
+        this.datesubmitted = datesubmitted
+        this.dateresolved= dateresolved
       
         this.description = description
         this.resolver = resolver

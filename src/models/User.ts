@@ -1,15 +1,15 @@
 import { Role } from "./Role";
 
 export  class User 
-{ userid: number;
+{ userId: number;
   username: string;
   password: string;  
   firstname: string;
   lastname: string;
   email: string;
   role: Role; // classn Object
-  constructor(userid:number, username:string,password: string, firstname:string,lastname:string,email:string,role:Role)
-  { this.userid  = userid;
+  constructor(userId:number, username:string,password: string, firstname:string,lastname:string,email:string,role:Role)
+  { this.userId  = userId;
     this.username = username;
     this.password = password;
     this.firstname = firstname;
