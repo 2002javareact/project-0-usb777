@@ -32,22 +32,83 @@ reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), 
 })
 
 //Get reimbursements by userId
-reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager','User']), authCheckId, async (req, res) => {
+reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager','User']), authCheckId, async (req, res) => 
+{
+    console.log("Role is " + req.session.user.role.role )
+    console.log("UserId is " + req.session.user.userId )
+
     const id = +req.params.userId
     if (isNaN(id)) {
         res.sendStatus(400)
-    } else {
-        try {
-            let status = await findReimbursementByUserId(id)
-            res.json(status)
-        } catch (e) {
-            res.status(e.status).send(e.message)
-        }
-    }
+    } else 
+    {
+
+        switch (req.session.user.role.role) {
+
+
+            case 'Admin': {
+                            //
+                            try {
+                                let status = await findReimbursementByUserId(id)
+                                res.json(status)
+                                } 
+                                catch (e)
+                                 {
+                                   res.status(e.status).send(e.message)
+                                 }
+                              break;
+                            }
+           case 'Finance-Manager': 
+                          {
+                            //
+                            try {
+                                let status = await findReimbursementByUserId(id)
+                                res.json(status)
+                                } 
+                                catch (e)
+                                 {
+                                   res.status(e.status).send(e.message)
+                                 }
+                             break;
+                           }
+            case 'User': 
+                          {
+                              if (id ==req.session.user.userId)
+                              { //
+                                try {
+                                    let status = await findReimbursementByUserId(id)
+                                    res.json(status)
+                                    } 
+                                    catch (e)
+                                     {
+                                       res.status(e.status).send(e.message)
+                                     }
+                              }
+                              else 
+                              {
+                               res.status(400).send('You can see info about current Reimbursement. But if you want it, give beer to Admin or me:) ')
+                              }
+
+                              break;
+                           } 
+                           
+                           default://should probably be last, 
+                           break;
+
+           } // switch
+
+
+
+        
+    } //else
 })
 
 //add new Reimbursement
-reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) => {
+reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) =>
+ {
+    console.log("Role is " + req.session.user.role.role )
+    console.log("USERid is " + req.session.user.userId )
+
     let { reimbursementId,author, amount, dateSubmitted,
         dateResolved, description, resolver,
         status, type } = req.body
@@ -114,7 +175,7 @@ reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (r
 
 
 //Patch request, that only admins and finance-managers can call. passes in information to be update for reimbursements
-reimbRouter.patch('', authFactory(['Admin', 'Finance-Manager', 'User']), async (req, res) => {
+reimbRouter.patch('', authFactory(['Admin', 'Finance-Manager']), async (req, res) => {
     let { reimbursementId, author, amount, dateSubmitted,
         dateResolved, description, resolver,
         status, type } = req.body
