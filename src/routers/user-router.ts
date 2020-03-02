@@ -1,5 +1,6 @@
 import * as express from 'express'
 import { User } from '../models/User'
+import { Role } from '../models/Role'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
 import { findAllUsers, updateOneUser, findUserById } from '../services/user-service'
 import { UserDTO } from '../dtos/UserDTO'
@@ -52,10 +53,12 @@ userRouter.patch('', authFactory(['Admin']), async (req,res)=>
     console.log("role_id ====" + role.roleid); 
     console.log("role_id ====" + role.role); 
    */
+
     if(username && password && email && userid && firstname && lastname && role.roleid && role.role)
     {
 
-    let uDTO:UserDTO = new UserDTO(userid,username,password,firstname,lastname,email,role.roleid,role.role)
+    let roleObject: Role  = new Role(role.roleid, role.role)    
+    let uDTO:UserDTO = new UserDTO(userid,username,password,firstname,lastname,email,role.roleid, role.role)
     
 
     let newUser = await updateOneUser(uDTO)

@@ -1,4 +1,4 @@
-import { daoFindUserByUsernameAndPassword, daoFindAllUsers, daoUpdateOneUser, daoFindUserById } from "../rep_dao/user-dao";
+import { daoFindUserByUsernameAndPassword, daoFindAllUsers,daoFindUserById, daoUpdateUser } from "../rep_dao/user-dao";
 import { User } from "../models/User";
 import { UserDTO } from "../dtos/UserDTO";
 
@@ -23,14 +23,15 @@ export async function findAllUsers():Promise<User[]>
 }
 
 
-export async function updateOneUser(newUser:UserDTO):Promise<User>
-{
-   return await daoUpdateOneUser(newUser)
-}
 
 
 
 export async function findUserById(id:number):Promise<User>
 {
    return await daoFindUserById(id)
+}
+
+export async function updateOneUser(newUser:UserDTO):Promise<User>
+{
+   return await daoUpdateUser(newUser)
 }
