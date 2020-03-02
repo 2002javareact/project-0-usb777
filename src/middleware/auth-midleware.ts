@@ -32,7 +32,7 @@ export const authCheckId = (req,res,next) => {
     //TODO
     // Allow through automatically, people that aren't users
     
-    if(req.session.user.role.role === 'Admin' || req.session.user.role.role === 'Finance-manager'){
+    if(req.session.user.role.role === 'Admin' || req.session.user.role.role === 'Finance-Manager'|| req.session.user.role.role === 'User'){
         next()
     }else if(req.session.user.id === +req.params.id ){
         next()

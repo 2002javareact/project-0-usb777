@@ -23,14 +23,48 @@ userRouter.get('', [authFactory(['Admin', 'Finance-Manager']),  async (req,res)=
 
 // in express we can add a path variable by using a colon in the path
 // this will add it to the request object and the colon makes it match anything
-userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCheckId, async (req,res)=>{
+userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCheckId, async (req,res)=>
+{
+    console.log("Role is " + req.session.user.role.role )
+    console.log("USERid is " + req.session.user.userId )
     const id = +req.params.id// the plus sign is to type coerce into a number
     if(isNaN(id)){
         res.sendStatus(400)
     }else {
         try{
-            let user = await findUserById(id)
-            res.json(user)
+             switch (req.session.user.role.role) {
+
+
+             case 'Admin': {
+                               let user = await findUserById(id)
+                               res.json(user)
+                               break;
+                             }
+            case 'Finance-Manager': 
+                           {
+                              let user = await findUserById(id)
+                              res.json(user)
+                              break;
+                            }
+             case 'User': 
+                           {
+                               if (id ==req.session.user.userId)
+                               { let user = await findUserById(id)
+                                 res.json(user)
+                               }
+                               else 
+                               {
+                                res.status(400).send('You can see info about you only.')
+                               }
+
+                               break;
+                            } 
+                            
+                            default://should probably be last, 
+                            break;
+
+            } // switch
+
         }catch(e){
             res.status(e.status).send(e.message)
         }
@@ -41,18 +75,13 @@ userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCh
 
 
 
-// generally in rest convention
-// a post request to the root of a resource will make one new of that resource
+// PATCH - update USER
 userRouter.patch('', authFactory(['Admin']), async (req,res)=>
 {
     let { userid, username, password,  firstname, lastname,   email, role } = req.body// this will be where the data the sent me is
     // the downside is this is by default just a string of json, not a js object
     console.log(JSON.stringify(req.body))
-    // {"userid":3,"username":"user256","password":"password","firstname":"Helga","lastname":"Yorming777","email":"hyorg@gmail.com","role":{"roleid":2,"role":"User"}}
-   /*
-    console.log("role_id ====" + role.roleid); 
-    console.log("role_id ====" + role.role); 
-   */
+   
 
     if(username && password && email && userid && firstname && lastname && role.roleid && role.role)
     {
