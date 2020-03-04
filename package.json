@@ -5,6 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "nodemon --exec ts-node src/index.ts",
+    "deploy": "ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "DzmitrySamoila",
@@ -19,6 +20,8 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
-    "express-session": "^1.17.0"
+    "express-session": "^1.17.0",
+    "fresh": "^0.5.2",
+    "pg": "^7.18.2"
   }
 }

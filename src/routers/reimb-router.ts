@@ -113,29 +113,32 @@ reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (r
         dateResolved, description, resolver,
         status, type } = req.body
 
-        if (req.session.user.role.role=='User')  
+        if (req.session.user.role.role === "User")
         {
-            if (amount && description && type)
-            {
-             try 
-              {
-                 // reimbursement Id = 0
-                 let reimbursement = await insertReimbursement(new Reimbursement(0, req.session.user.userId, amount, new Date().toLocaleDateString() , '1970/01/01', description, null, 1, type))
-                 res.json(reimbursement).sendStatus(201)
-               } catch (e) 
-                {
-                 throw new InternalServerError()
-                 }
- 
-             }
-             else  
-             {
-                 res.status(400).send('Please include all fields for Reimbursement')
-             }
 
-        } // User Add reimbursement
-    else  //Admin and Finance-Manager
-    {
+            if (amount && description && type)
+           {
+            try 
+             {
+                // reimbursement Id = 0
+                let reimbursement = await insertReimbursement(new Reimbursement(0, req.session.user.userId, amount, new Date().toLocaleDateString() , '1970/01/01', description, null, 1, type))
+                res.json(reimbursement).sendStatus(201)
+              } catch (e) 
+               {
+                throw new InternalServerError()
+                }
+
+            }
+            else  
+            {
+                res.status(400).send('Please include all fields for Reimbursement')
+            }
+
+        } //User add Reimb
+
+        else // Admin, Finance-Manager
+        {
+      
 
 
         if (!author || !dateSubmitted || !dateResolved || !description || !resolver || !status)
@@ -193,8 +196,8 @@ reimbRouter.post('', authFactory(['Admin', 'Finance-Manager', 'User']), async (r
         else {
             res.status(400).send('Please include all fields for Reimbursement')
         }
-    } // else for Admin and Finance-Manager
-
+   
+    } // Admin, Finance-Manager
 
 })
 
