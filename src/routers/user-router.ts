@@ -78,16 +78,16 @@ userRouter.get('/:id', authFactory(['Admin', 'User', 'Finance-Manager']), authCh
 // PATCH - update USER
 userRouter.patch('', authFactory(['Admin']), async (req,res)=>
 {
-    let { userid, username, password,  firstname, lastname,   email, role } = req.body// this will be where the data the sent me is
+    let { userId, userName, password,  firstName, lastName,   email, role } = req.body// this will be where the data the sent me is
     // the downside is this is by default just a string of json, not a js object
     console.log(JSON.stringify(req.body))
    
 
-    if(username && password && email && userid && firstname && lastname && role.roleid && role.role)
+    if(userName && password && email && userId && firstName && lastName && role.roleid && role.role)
     {
 
     let roleObject: Role  = new Role(role.roleid, role.role)    
-    let uDTO:UserDTO = new UserDTO(userid,username,password,firstname,lastname,email,role.roleid, role.role)
+    let uDTO:UserDTO = new UserDTO(userId,userName,password,firstName,lastName,email,role.roleid, role.role)
     
 
     let newUser = await updateOneUser(uDTO)
