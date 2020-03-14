@@ -1,6 +1,7 @@
 import * as express from 'express'
 import * as bodyparser from 'body-parser'
 import { loggingMiddleware } from './middleware/logging-middleware'
+import { corsFilter } from './middleware/cors-filter'
 
 /**  import { reimbRouter } from './routers/reimb-router' */
 import { sessionMiddleware } from './middleware/session-middleware'
@@ -24,6 +25,7 @@ app.use('/', bodyparser.json())
 app.use(loggingMiddleware)
 app.use(sessionMiddleware)
 
+app.use(corsFilter)
 
 
 // this will register all http requests that match /users
