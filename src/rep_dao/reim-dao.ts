@@ -9,7 +9,7 @@ import { ReimbursementNotFoundError } from "../errors/ReimbursementNotFoundError
 
 
 
-
+/*
 // this function gets all reimbs
 export async function daoFindAllReimbursement():Promise<Reimbursement[]>{
     let client:PoolClient
@@ -24,6 +24,58 @@ export async function daoFindAllReimbursement():Promise<Reimbursement[]>{
         +' join project0.reimbursementtype rtype on rtype.typeid = r."type" ') ;
 
          return results.rows.map(reimbursementDTOToReimbursementConverter)
+
+    }catch(e){
+        throw new InternalServerError()
+    } finally {
+        client && client.release()
+    }
+
+}
+
+*/
+/*
+
+// this function gets anf formats all users
+export async function daoFindAllUsers():Promise<User[]>{
+    let client:PoolClient
+    try{
+        client = await connectionPool.connect()
+        let results = await client.query('SELECT * FROM project0."user" U inner join project0."role" R on U."role" = R.roleid')
+        return results.rows.map(userDTOToUserConverter)
+
+    }catch(e){
+        throw new InternalServerError()
+    } finally {
+        client && client.release()
+    }
+
+}
+
+
+*/
+
+export async function daoFindAllReimbursement():Promise<Reimbursement[]>
+{
+    let client:PoolClient
+    try{
+        client = await connectionPool.connect()
+        let results = await client.query('SELECT r.reimbursementid, '+ 
+        'r.author, u.username, '+
+       ' r.amount,'+
+       ' r.datesubmitted,'+
+       ' r.dateresolved,'+
+       ' r.description,'+
+       ' r.resolver,'+
+       ' r.status, rs.status, '+
+       '  r."type", rt."type" '+
+        
+       ' FROM project0.reimbursement r '+
+       ' inner join project0.reimbursementstatus  rs on r.status = rs.statusid '+
+       ' inner join project0.reimbursementtype rt on r."type"  = rt.typeid  '+
+       ' inner join project0."user" u   on r.author  = u.userid  '+        
+       ' order by r.reimbursementid ') 
+        return results.rows.map(reimbursementDTOToReimbursementConverter)
 
     }catch(e){
         throw new InternalServerError()

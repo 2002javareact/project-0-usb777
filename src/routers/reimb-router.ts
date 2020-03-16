@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { Reimbursement } from '../models/Reimbursement'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
-import { findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
+import { findAllReimbursement,findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
 import { ReimbursementDTO } from '../dtos/ReimbursementDTO'
 
 import { InternalServerError } from '../errors/InternalServerError'
@@ -9,6 +9,18 @@ import { InternalServerError } from '../errors/InternalServerError'
 
 
 export const reimbRouter = express.Router()
+
+//Get all Reimbersement
+reimbRouter.get('', [authFactory(['Admin', 'Finance-Manager']),  async (req,res)=>{
+    //get all of our users
+    //format them to json
+    //use the response obj to send them back
+    let reimbs:Reimbursement[] = await findAllReimbursement(); 
+    res.json(reimbs)// this will format the object into json and send it back
+    
+}])
+
+
 
 //Get reimbursements by statusId
 reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), async (req, res) => 
