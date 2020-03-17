@@ -55,26 +55,16 @@ export async function daoFindAllUsers():Promise<User[]>{
 
 */
 
+
+
+
+
 export async function daoFindAllReimbursement():Promise<Reimbursement[]>
 {
     let client:PoolClient
     try{
         client = await connectionPool.connect()
-        let results = await client.query('SELECT r.reimbursementid, '+ 
-        'r.author, u.username, '+
-       ' r.amount,'+
-       ' r.datesubmitted,'+
-       ' r.dateresolved,'+
-       ' r.description,'+
-       ' r.resolver,'+
-       ' r.status, rs.status, '+
-       '  r."type", rt."type" '+
-        
-       ' FROM project0.reimbursement r '+
-       ' inner join project0.reimbursementstatus  rs on r.status = rs.statusid '+
-       ' inner join project0.reimbursementtype rt on r."type"  = rt.typeid  '+
-       ' inner join project0."user" u   on r.author  = u.userid  '+        
-       ' order by r.reimbursementid ') 
+        let results = await client.query('SELECT *  FROM project0.reimbursement  order by reimbursementid ') 
         return results.rows.map(reimbursementDTOToReimbursementConverter)
 
     }catch(e){
