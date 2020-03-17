@@ -76,6 +76,41 @@ export async function daoFindAllReimbursement():Promise<Reimbursement[]>
 }
 
 
+/**
+ * 
+ * @param status_id 
+ * 
+ */
+
+
+// get Reimb by StatusID
+export async function daoFindReimbursementById(id:number):Promise<Reimbursement>
+{
+    let client:PoolClient
+    try{
+        client = await connectionPool.connect()
+      let result = await client.query('select *  from project0.reimbursement r  where r.reimbursementid = $1', [id])
+        if(result.rowCount === 0)
+        {
+            throw new Error('Reimbursement Not Found')
+        }
+       
+        return result.rows.map(reimbursementDTOToReimbursementConverter);
+    }catch(e){
+        // id DNE
+        //need if for that
+        if(e.message ==='Reimbursement Not Found')
+        {
+            throw new ReimbursementNotFoundError()
+        }
+        throw new InternalServerError()
+    } finally {
+        client && client.release()
+    }
+}
+
+
+
 // get Reimb by StatusID
 export async function daoFindReimbursementByStatusId(status_id:number):Promise<Reimbursement>
 {

@@ -1,4 +1,4 @@
-import { daoFindAllReimbursement, daoFindReimbursementByStatusId, daoFindReimbursementByUserId, daoInsertReimbursement, daoUpdateReimbursement } from "../rep_dao/reim-dao";
+import { daoFindReimbursementById, daoFindAllReimbursement, daoFindReimbursementByStatusId, daoFindReimbursementByUserId, daoInsertReimbursement, daoUpdateReimbursement } from "../rep_dao/reim-dao";
 import { Reimbursement } from "../models/Reimbursement";
 import { ReimbursementDTO } from "../dtos/ReimbursementDTO";
 
@@ -9,6 +9,16 @@ export async function findAllReimbursement():Promise<Reimbursement[]>{
    // know what time of day, these requests get most sent
    return await daoFindAllReimbursement()
 }
+
+
+
+
+// function finding Reimb by id
+export async function findReimbursementById(Id:number):Promise<Reimbursement>
+{
+   return await daoFindReimbursementById(Id)
+}
+
 
 
 // function finding Reimb by statusid

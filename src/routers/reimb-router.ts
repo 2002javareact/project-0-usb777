@@ -1,7 +1,7 @@
 import * as express from 'express'
 import { Reimbursement } from '../models/Reimbursement'
 import {  authFactory, authCheckId } from '../middleware/auth-midleware'
-import { findAllReimbursement,findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
+import { findReimbursementById,findAllReimbursement,findReimbursementByStatusId, findReimbursementByUserId, insertReimbursement, updateReimbursement } from '../services/reimb-service'
 import { ReimbursementDTO } from '../dtos/ReimbursementDTO'
 
 import { InternalServerError } from '../errors/InternalServerError'
@@ -19,6 +19,31 @@ reimbRouter.get('', [authFactory(['Admin', 'Finance-Manager']),  async (req,res)
     res.json(reimbs)// this will format the object into json and send it back
     
 }])
+
+
+
+
+
+//Get reimbursements by Id
+reimbRouter.get('/:Id', authFactory(['Admin', 'Finance-Manager']), async (req, res) => 
+{    /**Super important part about roles */
+     console.log("Role is " + req.session.user.role.role )
+    
+     const id = +req.params.Id
+    if (isNaN(id)) 
+    {
+        res.sendStatus(400)
+    } else 
+    {
+        try 
+        {
+            let status = await findReimbursementById(id)
+            res.json(status)
+        } catch (e) {
+            res.status(e.status).send(e.message)
+        }
+    }
+})
 
 
 
@@ -42,6 +67,8 @@ reimbRouter.get('/status/:statusId', authFactory(['Admin', 'Finance-Manager']), 
         }
     }
 })
+
+
 
 //Get reimbursements by userId
 reimbRouter.get('/author/userId/:userId', authFactory(['Admin','Finance-Manager','User']), authCheckId, async (req, res) => 
